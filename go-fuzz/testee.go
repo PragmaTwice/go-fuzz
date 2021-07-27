@@ -12,6 +12,7 @@ import (
 	"os"
 	"os/exec"
 	"path"
+	"path/filepath"
 	"strconv"
 	"strings"
 	"sync/atomic"
@@ -398,9 +399,53 @@ func (t *Testee) shutdown() (output []byte) {
 		}
 	}
 
+	if *flagMoveLog {
+		dirsToGo := []string{t.dataDir, mysqlDataDir}
+		destDir := filepath.Join(*flagWorkdir, "log", filepath.Base(t.dataDir))
+
+		if os.MkdirAll(destDir, os.ModePerm) == nil {
+			for _, dir := range dirsToGo {
+				if fi, err := ioutil.ReadDir(dir); err == nil {
+					for _, v := range fi {
+						if strings.HasSuffix(v.Name(), ".log") {
+							copyFileContents(filepath.Join(dir, v.Name()), filepath.Join(destDir, v.Name()))
+						}
+					}
+				}
+			}
+		}
+	}
+
 	if *flagRemoveDataDir {
 		os.RemoveAll(t.dataDir)
 		os.RemoveAll(mysqlDataDir)
 	}
 	return out
+}
+
+// copyFileContents copies the contents of the file named src to the file named
+// by dst. The file will be created if it does not already exist. If the
+// destination file exists, all it's contents will be replaced by the contents
+// of the source file.
+func copyFileContents(src, dst string) (err error) {
+	in, err := os.Open(src)
+	if err != nil {
+		return
+	}
+	defer in.Close()
+	out, err := os.Create(dst)
+	if err != nil {
+		return
+	}
+	defer func() {
+		cerr := out.Close()
+		if err == nil {
+			err = cerr
+		}
+	}()
+	if _, err = io.Copy(out, in); err != nil {
+		return
+	}
+	err = out.Sync()
+	return
 }

@@ -44,6 +44,7 @@ var (
 	flagDumpCover         = flag.Bool("dumpcover", false, "dump coverage profile into workdir")
 	flagDup               = flag.Bool("dup", false, "collect duplicate crashers")
 	flagRemoveDataDir     = flag.Bool("rm", false, "remove TiDB and MySQL data dir after shutdown instance")
+	flagMoveLog           = flag.Bool("move-log", false, "move TiDB and MySQL log from temp dir to work dir")
 	flagCoverCounters     = flag.Bool("covercounters", true, "use coverage hit counters")
 	flagSonar             = flag.Bool("sonar", false, "use sonar hints")
 	flagV                 = flag.Int("v", 0, "verbosity level")
