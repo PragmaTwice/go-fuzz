@@ -68,7 +68,7 @@ func (m *Mutator) mutate(data SqlWrap, ro *ROData) SqlWrap {
 	}
 	for res.len() > MaxInputSize {
 		// todo: implement trunk
-		panic(fmt.Sprintf("mutation result too loong: %d", res.len()))
+		panic(fmt.Sprintf("mutation result too long (length %d)", res.len()))
 	}
 	return res
 }

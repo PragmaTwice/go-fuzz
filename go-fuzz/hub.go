@@ -183,7 +183,7 @@ func newHub(metadata MetaData) *Hub {
 	for _, lib := range ti_fuzz.Libs {
 		err := ro.mutateConfig.AddToLib(lib)
 		if err != nil {
-			panic(err)
+			panic(fmt.Sprintf("error while adding '%v' to library: %v", lib, err))
 		}
 	}
 

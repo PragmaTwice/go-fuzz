@@ -108,7 +108,7 @@ func (bin *TestBinary) close() {
 
 func (bin *TestBinary) test(data SqlWrap) (res int, ns uint64, cover, sonar, output []byte, crashed, hanged bool) {
 	if data.len() > MaxInputSize {
-		panic("input is too large")
+		panic(fmt.Sprintf("input data is too large (length %v): %v", data.len(), data))
 	}
 	ddls := data.getDDLs()
 
@@ -127,7 +127,7 @@ func (bin *TestBinary) test(data SqlWrap) (res int, ns uint64, cover, sonar, out
 			bin.testee = newTestee(bin.fileName, bin.comm, bin.coverRegion, bin.inputRegion, bin.sonarRegion, bin.fnidx, bin.testeeBuffer, ddls)
 			for _, ddl := range ddls {
 				if len(ddl) > MaxInputSize {
-					panic("DDL input is too large")
+					panic(fmt.Sprintf("DDL input is too large (length %v): %v", len(ddl), ddl))
 				}
 				if *flagV > 0 {
 					log.Printf("ddl: %s", ddl)
@@ -138,7 +138,7 @@ func (bin *TestBinary) test(data SqlWrap) (res int, ns uint64, cover, sonar, out
 				}
 				if crashed {
 					// we now consider crash on ddl impossible
-					panic("testee crashed on ddl")
+					panic(fmt.Sprintf("testee crashed on ddl (please check fuzz.log for more details): %v", ddl))
 				}
 			}
 		}
@@ -214,7 +214,7 @@ retry:
 	var rawInitOut [limit]byte
 	n, err := rStdout.Read(rawInitOut[:])
 	if err != nil {
-		panic(err)
+		panic(fmt.Sprintf("error on reading from tidb: %v", err))
 	}
 	initOut := string(rawInitOut[:n])
 	if n == limit {

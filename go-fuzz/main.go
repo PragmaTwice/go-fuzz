@@ -5,6 +5,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net"
@@ -72,19 +73,19 @@ func main() {
 
 	initSql, err := ioutil.ReadFile(*flagInitPath)
 	if err != nil {
-		panic(err)
+		panic(fmt.Sprintf("error on reading initial SQL file %v: %v", flagInitPath, err))
 	}
 
 	libSql, err := ioutil.ReadFile(*flagLibraryPath)
 	if err != nil {
-		panic(err)
+		panic(fmt.Sprintf("error on reading library SQL file %v: %v", flagLibraryPath, err))
 	}
 
 	ti_fuzz.Seed = strings.Trim(string(initSql), " \n")
 
 	ti_fuzz.Scheme, err = ti_fuzz.GetScheme(parser.New(), ti_fuzz.Seed)
 	if err != nil {
-		panic(err)
+		panic(fmt.Sprintf("error on getting scheme of DDL in initial SQL: %v", err))
 	}
 
 	for _, v := range strings.Split(string(libSql), ";") {
