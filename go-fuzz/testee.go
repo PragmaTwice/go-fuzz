@@ -190,6 +190,7 @@ retry:
 	cmd.Stderr = wStdout
 	cmd.Env = append([]string{}, os.Environ()...)
 	cmd.Env = append(cmd.Env, "GOTRACEBACK=1")
+	cmd.Env = append(cmd.Env, fmt.Sprintf("TIFUZZ_VERBOSE=%d", *flagV))
 	setupCommMapping(cmd, comm, rOut, wIn)
 	if err = cmd.Start(); err != nil {
 		// This can be a transient failure like "cannot allocate memory" or "text file is busy".
