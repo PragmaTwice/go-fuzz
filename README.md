@@ -28,8 +28,8 @@ Original README of go-fuzz has been renamed to `README.go-fuzz.md`
 1. Build Ti Fuzz tools
       ```
       cd <oraluben/go-fuzz>
-      go build ./go-fuzz-build -o ti-fuzz-build
-      go build ./go-fuzz -o ti-fuzz-main
+      go build -o ti-fuzz-build ./go-fuzz-build
+      go build -o ti-fuzz-main ./go-fuzz
       ```
 1. Build the instrumented TiDB 
       ```
